@@ -19,11 +19,15 @@ document.addEventListener('DOMContentLoaded',function()
                 else {
                     let gameType = this.getAttribute("data-type");
                     
-                    runGame(gameType ) ;
+                    runGame(gameType);
                 }    
             })
         }
-
+    document.getElementById("answer-box").addEventListener('keydown', function(event){
+        if (event.key === "Enter"){
+            checkAnswer();
+        }
+    });
     runGame('addition')    ;
   })
 
@@ -33,26 +37,30 @@ document.addEventListener('DOMContentLoaded',function()
 */
 
 function runGame(gameType) {
+    document.getElementById("answer-box").value = '';
+    document.getElementById("answer-box").focus();
+
     let num1 =Math.floor(Math.random()*25)+1;
-    let num2 =Math.floor(Math.random()*25)+1;
-    console.log('rungame func',num1, num2);
+    let num2 =Math.floor(Math.random()*25)+1;   
     if (gameType === "addition"){
         displayAdditionQuestion(num1,num2);
+    } else if (gameType === "subtract"){
+        displaySubtractQuestion(num1,num2);
+    } else if (gameType === "multiply"){
+        displayMultiplyQuestion(num1,num2);
+    } else if (gameType === "division"){
+        displayDivisionQuestion(num1,num2);
     } else {
-        { alert(`Unknown game type:  ${gameType}`);
+         alert(`Unknown game type:  ${gameType}`);
             throw `Unknown game type: ${gameType}. ABORTED!`;
-        }
-    }
-    
+        }   
 
 }
 
 /**
  * cheks the answer against the first element in the returned array by
- * calculateCorrectAnswer() function
- * 
+ * calculateCorrectAnswer() function * 
  */
-
 
 function checkAnswer() {
     let userAnswer = parseInt(document.getElementById('answer-box').value);
@@ -62,7 +70,7 @@ function checkAnswer() {
         alert('Correct !!!!');
         incrementScore();
     } else {
-        alert(`Nope....  You typed in ${userAnswer}. But th correct answer is ${calculatedAnswer[0]}. ` );
+        alert(`Nope....  You typed in ${userAnswer}. But the correct answer is ${calculatedAnswer[0]}. ` );
         incrementWrongAnswer();
     }
     runGame(calculatedAnswer[1]);
@@ -82,20 +90,21 @@ function calculateCorrectAnswer() {
 
     if ( operator === "+"){
        return [operand1+operand2, "addition"];
-    } else {
-        { alert(`Unknown game type:  ${operator}`);
-            throw `Unknown game type: ${operator}. ABORTED!`;
-        }
-    }
-
-    if ( operator === "-"){
-        alert ('calculateCorrectAnswer', operand1+operand2);
-        return [operand1-operand2, "subtruction"];
-    } else {
-        { alert(`Unknown game type:  ${operator}`);
-            throw `Unknown game type: ${operator}. ABORTED!`;
-        }
-    }
+    } else if ( operator === "-"){
+        return [operand1-operand2, "subtract"];
+    } else  if ( operator === "X"){
+        return [operand1*operand2, "multiply"];
+    } else if ( operator === "÷"){
+        return [operand1/operand2, "division"];
+    } {
+          alert(`Unknown game type:  ${operator}`);
+             throw `Unknown game type: ${operator}. ABORTED!`;
+         }
+     
+    
+          
+    
+    
 }
 /**
  * read the current score, increment it by 1
@@ -123,10 +132,28 @@ function displayAdditionQuestion(operand1, operand2) {
   document.getElementById('operator').textContent = "+";
 }
 
-function displaySubtractQuestion() {
-
+function displaySubtractQuestion(operand1, operand2) {
+    // if second number >er -switch them
+    if (operand1 < operand2) {
+        operand1 =operand1 + operand2;
+        operand2 = operand1 - operand2;
+        operand1 = operand1 - operand2;
+    }
+    document.getElementById('operand1').textContent = operand1;
+    document.getElementById('operand2').textContent = operand2;
+    document.getElementById('operator').textContent = "-";
 }
 
-function displayMultiplyQuestion() {
+function displayMultiplyQuestion(operand1, operand2) {
+    document.getElementById('operand1').textContent = operand1;
+    document.getElementById('operand2').textContent = operand2;
+    document.getElementById('operator').textContent = "X";
+    
+}
+
+function displayDivisionQuestion(operand1, operand2) {
+    document.getElementById('operand1').textContent = parseInt(operand1)*parseInt(operand2);
+    document.getElementById('operand2').textContent = operand2;
+    document.getElementById('operator').textContent = "÷";
     
 }
